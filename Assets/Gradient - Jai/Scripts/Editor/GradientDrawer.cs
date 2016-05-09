@@ -33,7 +33,7 @@ using System.Collections.Generic;
             //Draw a invisible button over the gradient.
             GUI.color = Color.clear;
             if(GUI.Button(gradientRect, "")) {
-              GradientEditor.Init(property); 
+              GradientEditor.Init(instance); 
             }
             GUI.color = Color.gray;
 

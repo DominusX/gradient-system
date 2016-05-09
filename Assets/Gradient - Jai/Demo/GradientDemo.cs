@@ -5,7 +5,7 @@ using JG = Jai.Graphics;
 [ExecuteInEditMode]
 public class GradientDemo : MonoBehaviour {
 
-    public JG.Gradient gradient;
+    public JG.Gradient gradient = new JG.Gradient();
 
     [Range(0, 1)]
     public float evaluateTime;
