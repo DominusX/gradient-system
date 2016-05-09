@@ -15,6 +15,7 @@ using System.Collections.Generic;
     public class GradientDrawer : PropertyDrawer
     {
         Texture2D previewTexture = new Texture2D(256, 8);
+        Jai.Graphics.Gradient instance;
         bool gradientKeysFoldout;
         
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -24,54 +25,30 @@ using System.Collections.Generic;
 
             //Draw label
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);   
-            
-            //Draw gradient texture
-            GUI.DrawTexture(new Rect(position.x, position.y, position.width, 16), previewTexture);
+            Rect gradientRect = new Rect(position.x, position.y, position.width, 16);
 
-            DrawKeys(position, property);
+            //Draw gradient texture
+            PropertyDrawerMethods.DrawTexture(gradientRect, previewTexture);
+
+            //Draw a invisible button over the gradient.
+            GUI.color = Color.clear;
+            if(GUI.Button(gradientRect, "")) {
+              GradientEditor.Init(property); 
+            }
+            GUI.color = Color.gray;
 
             EditorGUI.EndProperty();
         }
 
-        void DrawKeys(Rect position, SerializedProperty property)
-        {
-            SerializedProperty keys = property.FindPropertyRelative("keys");
-            Rect lastKeyRect = new Rect(position.x, position.y + 16, position.width, position.height);
-
-            if (gradientKeysFoldout)
-            {
-                for (int i = 0; i < keys.arraySize; i++)
-                {
-                    Rect colorRect = new Rect(lastKeyRect.x, lastKeyRect.y + 18, lastKeyRect.width, position.height);
-                    Rect timeRect = new Rect(lastKeyRect.x, lastKeyRect.y + 36, lastKeyRect.width, position.height);
-
-                    EditorGUI.PropertyField(colorRect, keys.GetArrayElementAtIndex(i).FindPropertyRelative("color"));
-                    EditorGUI.PropertyField(timeRect, keys.GetArrayElementAtIndex(i).FindPropertyRelative("time"));
-
-                    lastKeyRect = timeRect;
-                }
-            }
-        }
-
-        public override float GetPropertyHeight(SerializedProperty prop, GUIContent label)
-        {
-            if (!gradientKeysFoldout)
-            {
-                return base.GetPropertyHeight(prop, label);
-            }
-            else
-            {
-                return base.GetPropertyHeight(prop, label) + 16;
-            }
-        }
-
         void CreateGradientTexture(SerializedProperty property)
         {
-            Jai.Graphics.Gradient instance = PropertyDrawerMethods.GetActualObjectForSerializedProperty<Jai.Graphics.Gradient>(fieldInfo, property);
+            if(instance == null) {
+              instance = PropertyDrawerMethods.GetActualObjectForSerializedProperty<Jai.Graphics.Gradient>(fieldInfo, property);
+            }
       
             if (previewTexture == null)
             {
-                previewTexture = new Texture2D(256, 8);
+              previewTexture = new Texture2D(256, 8);
             }
 
             int width = previewTexture.width;
@@ -107,3 +84,4 @@ using System.Collections.Generic;
             previewTexture.Apply();
         }
     }
+  

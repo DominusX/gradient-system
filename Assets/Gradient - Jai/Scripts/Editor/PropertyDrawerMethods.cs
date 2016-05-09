@@ -6,6 +6,9 @@ using System;
 using System.Linq;
 
 public class PropertyDrawerMethods {
+
+
+
     public static T GetActualObjectForSerializedProperty<T>(FieldInfo fieldInfo, SerializedProperty property) where T : class
     {
         var obj = fieldInfo.GetValue(property.serializedObject.targetObject);
@@ -23,4 +26,18 @@ public class PropertyDrawerMethods {
         }
         return actualObject;
     }
+
+    
+    //Method provided by numberkruncher as a workaround for the flicker texture.
+    private static GUIStyle s_TempStyle = new GUIStyle();
+
+    public static void DrawTexture(Rect position, Texture2D texture) {
+      if (Event.current.type != EventType.Repaint)
+        return;
+
+      s_TempStyle.normal.background = texture;
+
+      s_TempStyle.Draw(position, GUIContent.none, false, false, false, false);
+    }
+    ////////////////////////////////////////////////////////////////////////////
 }

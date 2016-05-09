@@ -2,6 +2,7 @@
 using System.Collections;
 using JG = Jai.Graphics;
 
+[ExecuteInEditMode]
 public class GradientDemo : MonoBehaviour {
 
     public JG.Gradient gradient;
@@ -13,5 +14,9 @@ public class GradientDemo : MonoBehaviour {
     public void Evaluate()
     {
        evaluateColor = gradient.Evaluate(evaluateTime);
+    }
+
+    void Update(){
+      Evaluate();
     }
 }
