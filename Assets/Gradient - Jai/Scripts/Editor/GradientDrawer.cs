@@ -16,31 +16,48 @@ using System.Collections.Generic;
     {
         Texture2D previewTexture = new Texture2D(256, 8);
         Jai.Graphics.Gradient instance;
-        bool gradientKeysFoldout;
-        
+         
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            CreateGradientTexture(property);
+            DrawGradientTexture(property);
+            DrawGradientVariable(position, property, label);
+        }
+
+        void DrawGradientVariable(Rect position, SerializedProperty property, GUIContent label)
+        {
             EditorGUI.BeginProperty(position, label, property);
 
-            //Draw label
-            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);   
-            Rect gradientRect = new Rect(position.x, position.y, position.width, 16);
+            //Draw the label of the variable and set the position
+            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
-            //Draw gradient texture
+            //Set the box position
+            Rect boxRect = new Rect(position.x, position.y, position.width, 16);
+
+            //Draw a Box behind the Gradient
+            GUI.Box(boxRect, "");
+
+            //Set the gradient position
+            Rect gradientRect = new Rect(boxRect.position.x + 1, boxRect.position.y + 1, boxRect.width - 2, boxRect.height - 2);
+
+            //Draw gradient texture with a workaround method
             PropertyDrawerMethods.DrawTexture(gradientRect, previewTexture);
 
-            //Draw a invisible button over the gradient.
+            //Set the Color of the Editor GUI to transparent
             GUI.color = Color.clear;
-            if(GUI.Button(gradientRect, "")) {
-              GradientEditor.Init(instance); 
+            
+            //Draw the button of the Gradient Editor
+            if (GUI.Button(gradientRect, ""))
+            {
+                GradientEditor.Init(instance);
             }
-            GUI.color = Color.gray;
+
+            //Revert the Color of the Editor GUI
+            GUI.color = Color.white;
 
             EditorGUI.EndProperty();
         }
 
-        void CreateGradientTexture(SerializedProperty property)
+        void DrawGradientTexture(SerializedProperty property)
         {
             if(instance == null) {
               instance = PropertyDrawerMethods.GetActualObjectForSerializedProperty<Jai.Graphics.Gradient>(fieldInfo, property);
@@ -56,7 +73,7 @@ using System.Collections.Generic;
 
             Color[] colors = new Color[width * height];
 
-            Color bgColor = Color.black;
+            Color bgColor = Color.clear;
 
             for (int i = 0; i < width; i++)
             {
