@@ -10,6 +10,8 @@ public class GradientEditor : EditorWindow
 
     public EditMode editMode;
 
+    Vector2 keysScrollPos;
+
     JG.Gradient gradient;
 
     //Editor
@@ -42,11 +44,6 @@ public class GradientEditor : EditorWindow
         {
             editMode = EditMode.Keys;
         }
-
-        if (GUILayout.Button("Custom Mode"))
-        {
-            editMode = EditMode.Custom;
-        }
         GUILayout.EndHorizontal();
 
         switch (editMode)
@@ -57,10 +54,6 @@ public class GradientEditor : EditorWindow
 
             case EditMode.Keys:
                 DrawKeysMode();
-                break;
-
-            case EditMode.Custom:
-                DrawCustomMode();
                 break;
         }
         Repaint();
@@ -73,6 +66,7 @@ public class GradientEditor : EditorWindow
 
     void DrawKeysMode()
     {
+        keysScrollPos = EditorGUILayout.BeginScrollView(keysScrollPos);
         for (int i = 0; i < gradient.keys.Count; i++)
         {
             GUILayout.BeginHorizontal();
@@ -96,6 +90,7 @@ public class GradientEditor : EditorWindow
                 EditorGUI.indentLevel--;
             }
         }
+        EditorGUILayout.EndScrollView();
 
         if (GUILayout.Button("Add"))
         {
@@ -104,8 +99,4 @@ public class GradientEditor : EditorWindow
         }
     }
 
-    void DrawCustomMode()
-    {
-
-    }
 }
